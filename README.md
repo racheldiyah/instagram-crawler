@@ -6,5 +6,5 @@ Cara Penggunaan :
 4. Jalankan program
 
 # Pembuat
-Diyah Anggraeny
-Rachel Haryawan
+- Diyah Anggraeny
+- Rachel Haryawan
