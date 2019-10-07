@@ -8,16 +8,16 @@ L.login("akun sendiri", "pass sendiri")
 
 profile = instaloader.Profile.from_username(L.context, username)
 
-usernamelist = []
-captionlist = []
+unamelist = []
+captlist = []
 hashtaglist = []
-likeslist = []
-commentlist = []
+likerslist = []
+commenterslist = []
 followerlist = []
 
 count = 1
 for post in profile.get_posts():
-        print("getting data from " + username + " from the " + str(count) + " post of " + str(profile.mediacount))
+        print("Mengambil data dari akun " + username + " post ke " + str(count) + " dari jumlah post sebanyak " + str(profile.mediacount))
         caption = post.caption
         if caption is None:
             caption = ""
@@ -30,11 +30,11 @@ for post in profile.get_posts():
         for comment in post.get_comments() :
             comments.append(comment.text.encode('ascii', 'ignore').decode('ascii'))
 
-        usernamelist.append(username)
-        captionlist.append(caption)
+        unamelist.append(username)
+        captlist.append(caption)
         hashtaglist.append(hashtag)
-        likeslist.append(likes)
-        commentlist.append(comments)
+        likerslist.append(likes)
+        commenterslist.append(comments)
         count = count+1
 
 followers = []
@@ -43,10 +43,10 @@ for follower in profile.get_followers():
     username_follower = follower.username
     profile_follower = instaloader.Profile.from_username(L.context, username_follower)
     if profile_follower.is_private == True:
-        print("This profile " + username_follower + " can't be accessed")
+        print("akun ini " + username_follower + " tidak dapat diakses")
     count = 1
     for post in profile_follower.get_posts():
-        print("getting data from " + username_follower + " from the " + str(count) + " post of " + str(profile_follower.mediacount) + ", from the " + str(count_account) + " follower of " + str(profile.followers))
+        print("Mengambil data dari akun " + username_follower + " post ke " + str(count) + " dari jumlah post sebanyak " + str(profile_follower.mediacount) + ", follower ke " + str(count_account) + " dari jumlah follower sebanyak " + str(profile.followers))
         caption = post.caption
         if caption is None:
             caption = ""
@@ -60,15 +60,15 @@ for follower in profile.get_followers():
         for comment in post.get_comments() :
             comments.append(comment.text.encode('ascii', 'ignore').decode('ascii'))
 
-        usernamelist.append(username_follower)
-        captionlist.append(caption)
+        unamelist.append(username_follower)
+        captlist.append(caption)
         hashtaglist.append(hashtag)
-        likeslist.append(likes)
-        commentlist.append(comments)
+        likerslist.append(likes)
+        commenterslist.append(comments)
         count = count+1
     count_account = count_account + 1
 
-data = pd.DataFrame({"Account":usernamelist, "Post":captionlist, "Tag":hashtaglist, "Likes":likeslist, "Comments":commentlist})
+data = pd.DataFrame({"Akun":unamelist, "Post":captlist, "Tag":hashtaglist, "Likes":likerslist, "Comments":commenterslist})
 timestring = time.strftime("%Y%m%d_%H%M%S")
 nama_file = "dataset_instagram_username_" + username + "_" + timestring + ".csv"
 data.to_csv(nama_file)
