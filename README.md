@@ -7,7 +7,7 @@ Cara Penggunaan :
 5. Log in dengan akun instagram yang kita miliki pada variabel akunsendiri dan passsendiri
 4. Jalankan program. Saat menjalankan program pastikan sudah terkoneksi dengan MangoDB
 
-# Program yang terdapat di koding
+# Program yang terdapat dalam codes
 1. Scrapping instagram hingga followers level ke-2 seperti cara Breadth First Search (BFS)
 2. Mendapatkan data post dengan likes terbanyak
 3. Saving & Querying menggunakan MongoDB
