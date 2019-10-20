@@ -1,10 +1,12 @@
 import instaloader
 import pandas as pd
 import time
+import pymongo
+from pymongo import MongoClient 
 
 username = "akun yang dituju"
 L = instaloader.Instaloader(max_connection_attempts=0)
-L.login("akun sendiri", "pass sendiri")
+L.login("akunsendiri", "passsendiri")
 
 profile = instaloader.Profile.from_username(L.context, username)
 
@@ -15,6 +17,7 @@ likerslist = []
 commenterslist = []
 followerlist = []
 
+#untuk mengambil post dari akun
 count = 1
 for post in profile.get_posts():
         print("Mengambil data dari akun " + username + " post ke " + str(count) + " dari jumlah post sebanyak " + str(profile.mediacount))
@@ -37,6 +40,31 @@ for post in profile.get_posts():
         commenterslist.append(comments)
         count = count+1
 
+        if int(count) % 10 == 0 or int(count) % 100 == 0 or int(count) % 1000 == 0 :
+                print("Berhenti sebentar selama 5 menit")
+                #time.sleep(300)
+        else :
+                print("Berhenti sebentar selama 30 detik")
+                #time.sleep(30)
+
+#untuk menentukan likes terbanyak
+mostlikeslist = []
+count = 1
+for post in profile.get_posts():
+        print("Mengambil data likes dari akun " + username + " post ke " + str(count) + " dari jumlah post sebanyak " + str(profile.mediacount))
+        likers = post.likes
+        mostlikeslist.append(likers)
+        count = count + 1
+        
+if len(mostlikeslist) == 0 :
+        print("Post dari akun " + username + " tidak ada")
+else :
+        mostlikes = max(mostlikeslist)
+        spotmostlikes = mostlikeslist.index(mostlikes)
+        print("Likes terbanyak dari akun " + username + " adalah post ke " + str(spotmostlikes + 1))
+
+
+#untuk mengambil post dari followers akun (1)
 followers = []
 count_account = 1
 for follower in profile.get_followers():
@@ -66,9 +94,101 @@ for follower in profile.get_followers():
         likerslist.append(likes)
         commenterslist.append(comments)
         count = count+1
+
+        if int(count) % 10 == 0 or int(count) % 100 == 0 or int(count) % 1000 == 0 :
+                print("Berhenti sebentar selama 5 menit")
+                #time.sleep(300)
+        else :
+                print("Berhenti sebentar selama 30 detik")
+                #time.sleep(30)
+
+    #untuk mendapat likes terbanyak
+    mostlikeslist1 = []
+    count = 1
+    for post in profile_follower.get_posts():
+        print("Mengambil data likes dari akun " + username_follower + " post ke " + str(count) + " dari jumlah post sebanyak " + str(profile_follower.mediacount))
+        likers = post.likes
+        mostlikeslist1.append(likers)
+        
+    if len(mostlikeslist1) == 0 :
+            print("Post dari akun " + username_follower + " tidak ada")
+    else :
+            mostlikes = max(mostlikeslist1)
+            spotmostlikes = mostlikeslist1.index(mostlikes)
+            print("Likes terbanyak dari akun " + username_follower + " adalah post ke " + str(spotmostlikes + 1))
+          
     count_account = count_account + 1
+
+        
+#untuk mengambil post dari followers akun (2)
+count_account = 1
+for follower in profile.get_followers():
+    username_follower = follower.username
+    profile_follower = instaloader.Profile.from_username(L.context, username_follower)
+    count_account = 1
+    for afollower in profile_follower.get_followers():
+            uname_follower = afollower.username
+            profil_follower = instaloader.Profile.from_username(L.context, uname_follower)
+            if profil_follower.is_private == True:
+                    print("akun ini " + uname_follower + " tidak dapat diakses")
+            count = 1
+            for post in profil_follower.get_posts():
+                print("Mengambil data dari akun " + uname_follower + " post ke " + str(count) + " dari jumlah post sebanyak " + str(profil_follower.mediacount) + ", follower ke " + str(count_account) + " dari akun " + username_follower + " dari jumlah follower sebanyak " + str(profile_follower.followers))
+                caption = post.caption
+                if caption is None:
+                    caption = ""
+                if caption is not None:
+                    caption = caption.encode('ascii', 'ignore').decode('ascii')
+        
+                hashtag = post.caption_hashtags
+                likes = post.likes
+        
+                comments = []
+                for comment in post.get_comments() :
+                    comments.append(comment.text.encode('ascii', 'ignore').decode('ascii'))
+
+                unamelist.append(uname_follower)
+                captlist.append(caption)
+                hashtaglist.append(hashtag)
+                likerslist.append(likes)
+                commenterslist.append(comments)
+                count = count+1
+
+                if int(count) % 10 == 0 or int(count) % 100 == 0 or int(count) % 1000 == 0 :
+                        print("Berhenti sebentar selama 5 menit")
+                        #time.sleep(300)
+                else :
+                        print("Berhenti sebentar selama 30 detik")
+                        #time.sleep(30)
+
+            #untuk mendapat likes terbanyak
+            mostlikeslist2 = []
+            count = 1
+            for post in profil_follower.get_posts():
+                print("Mengambil data likes dari akun " + uname_follower + " post ke " + str(count) + " dari jumlah post sebanyak " + str(profil_follower.mediacount))
+                likers = post.likes
+                mostlikeslist2.append(likers)
+        
+            if len(mostlikeslist2) == 0 :
+                    print("Post dari akun " + uname_follower + " tidak ada")
+            else :
+                    mostlikes = max(mostlikeslist2)
+                    spotmostlikes = mostlikeslist2.index(mostlikes)
+                    print("Likes terbanyak dari akun " + uname_follower + " adalah post ke " + str(spotmostlikes + 1))
+
+                
+            count_account = count_account + 1
+
+           
 
 data = pd.DataFrame({"Akun":unamelist, "Post":captlist, "Tag":hashtaglist, "Likes":likerslist, "Comments":commenterslist})
 timestring = time.strftime("%Y%m%d_%H%M%S")
 nama_file = "dataset_instagram_username_" + username + "_" + timestring + ".csv"
 data.to_csv(nama_file)
+
+client = MongoClient()
+mydatabase = client[nama_file]
+mycollection = mydatabase['myTable']
+cursor = mycollection.find() 
+for record in cursor: 
+    print(record) 
